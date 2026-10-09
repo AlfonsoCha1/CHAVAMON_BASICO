@@ -6,3 +6,4 @@ build-win/
 *.7z
 .DS_Store
 Thumbs.db
+publico/

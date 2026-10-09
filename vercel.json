@@ -1,0 +1,14 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "installCommand": "echo 'Sin dependencias: la app ya viene compilada'",
+  "buildCommand": "rm -rf publico && mkdir -p publico/app && cp -r web/. publico/ && cp -r dist/. publico/app/",
+  "outputDirectory": "publico",
+  "headers": [
+    { "source": "/app/sw.js", "headers": [{ "key": "Cache-Control", "value": "no-cache" }] },
+    { "source": "/(.*)", "headers": [
+      { "key": "X-Content-Type-Options", "value": "nosniff" },
+      { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+    ] }
+  ]
+}

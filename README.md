@@ -43,7 +43,7 @@ La ventana corre aislada (`contextIsolation` + `sandbox`) y se comunica con el s
 
 ## Descargar
 
-Instalador para Windows 10 y 11 de 64 bits en [Releases](https://github.com/AlfonsoCha1/CHAVAMON_BASICO/releases). La página de descarga está en `web/`.
+Instalador para Windows 10 y 11 de 64 bits en [Releases](https://github.com/AlfonsoCha1/CHAVAMON_BASICO/releases). La página de descarga está en `web/` y se publica en Vercel junto con el editor web (`/app/`).
 
 ## Probarlo desde el código
 
