@@ -1,0 +1,45 @@
+# Instaladores de CHAVAMON. Se ejecuta sobre empaquetar/app (lo arma preparar.mjs).
+# appId igual al de Montoya Studio: el instalador nuevo reemplaza la instalación anterior.
+appId: mx.montoyastudio.personal
+productName: CHAVAMON
+copyright: © 2026 Alfonso Chavarín
+electronVersion: 44.5.1
+asar: true
+directories:
+  output: ../salida
+  buildResources: build
+files:
+  - package.json
+  - dist/**
+  - electron/**
+  - build/icon-512.png
+publish: null
+win:
+  executableName: CHAVAMON
+  icon: build/icon.ico
+  target: nsis
+  artifactName: CHAVAMON-${version}-windows-${arch}-portable.${ext}
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: CHAVAMON
+  uninstallDisplayName: CHAVAMON ${version}
+  artifactName: CHAVAMON-${version}-windows-${arch}.${ext}
+  installerLanguages: [es_ES]
+  language: "3082"
+  deleteAppDataOnUninstall: false
+  runAfterFinish: true
+linux:
+  executableName: chavamon
+  icon: build/icon-512.png
+  category: AudioVideo
+  maintainer: Alfonso Chavarín <AlfonsoCha1@users.noreply.github.com>
+  synopsis: Editor de video local, sin marca de agua
+  description: Edita videos en tu equipo, sin cuentas y sin subir nada. Exporta MP4 para TikTok, Reels o YouTube.
+  artifactName: CHAVAMON-${version}-linux-${arch}.${ext}
+  target: [deb, AppImage]
+deb:
+  packageName: chavamon

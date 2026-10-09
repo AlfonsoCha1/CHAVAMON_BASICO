@@ -1,0 +1,112 @@
+# Arma los instaladores de CHAVAMON y los adjunta al release publicado.
+# Para usarlo: en GitHub crea un release (por ejemplo v0.1.1) y publícalo; este flujo construye,
+# prueba y sube los archivos solo. También se puede correr a mano desde la pestaña Actions
+# o se corre solo al subir cambios a la rama cambio-marca-chavamon (en esos casos deja los
+# archivos como artefactos, sin tocar ningún release).
+name: Instaladores
+
+on:
+  release:
+    types: [published]
+  push:
+    branches: [cambio-marca-chavamon]
+    paths: ['dist/**', 'electron/**', 'empaquetar/**', 'package.json', '.github/workflows/instaladores.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Preparar la app
+        run: node empaquetar/preparar.mjs
+      - name: Instaladores (64 bits y ARM64) y portátil
+        shell: bash
+        working-directory: empaquetar/app
+        run: |
+          npx --yes electron-builder@26.0.12 --win nsis --x64   --config ../electron-builder.yml --publish never
+          npx --yes electron-builder@26.0.12 --win nsis --arm64 --config ../electron-builder.yml --publish never
+          npx --yes electron-builder@26.0.12 --win zip  --x64   --config ../electron-builder.yml --publish never
+          ls -la ../salida
+      - name: Prueba en Windows (instalación silenciosa, importar y exportar)
+        shell: pwsh
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+        run: |
+          $v = (Get-Content package.json | ConvertFrom-Json).version
+          Start-Process -Wait -FilePath "empaquetar/salida/CHAVAMON-$v-windows-x64.exe" -ArgumentList "/S"
+          $exe = Join-Path $env:LOCALAPPDATA "Programs\CHAVAMON\CHAVAMON.exe"
+          if (-not (Test-Path $exe)) { throw "No se instaló en $exe" }
+          cd empaquetar/prueba
+          npm install --no-save playwright@1.52.0
+          node humo.cjs $exe "$env:RUNNER_TEMP\humo"
+      - name: Huellas SHA256
+        shell: bash
+        working-directory: empaquetar/salida
+        run: sha256sum CHAVAMON-*.exe CHAVAMON-*.zip > SHA256-windows.txt && cat SHA256-windows.txt
+      - name: Adjuntar al release
+        if: github.event_name == 'release'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "${{ github.event.release.tag_name }}" empaquetar/salida/CHAVAMON-*.exe empaquetar/salida/CHAVAMON-*.zip empaquetar/salida/SHA256-windows.txt --clobber --repo "${{ github.repository }}"
+      - name: Guardar como artefacto
+        if: github.event_name != 'release'
+        uses: actions/upload-artifact@v4
+        with:
+          name: chavamon-windows
+          path: |
+            empaquetar/salida/CHAVAMON-*.exe
+            empaquetar/salida/CHAVAMON-*.zip
+            empaquetar/salida/SHA256-windows.txt
+
+  linux:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Preparar la app
+        run: node empaquetar/preparar.mjs
+      - name: Paquete .deb y AppImage
+        working-directory: empaquetar/app
+        run: npx --yes electron-builder@26.0.12 --linux deb AppImage --x64 --config ../electron-builder.yml --publish never
+      - name: Editor web (.zip)
+        run: |
+          V=$(node -p "require('./package.json').version")
+          (cd dist && zip -qr "../empaquetar/salida/CHAVAMON-$V-web.zip" .)
+      - name: Prueba en Ubuntu (instalar .deb, importar y exportar)
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+        run: |
+          V=$(node -p "require('./package.json').version")
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq xvfb "./empaquetar/salida/CHAVAMON-$V-linux-amd64.deb"
+          cd empaquetar/prueba
+          npm install --no-save playwright@1.52.0
+          xvfb-run -a -s "-screen 0 1440x900x24" node humo.cjs /opt/CHAVAMON/chavamon "$RUNNER_TEMP/humo"
+      - name: Huellas SHA256
+        working-directory: empaquetar/salida
+        run: sha256sum CHAVAMON-*.deb CHAVAMON-*.AppImage CHAVAMON-*-web.zip > SHA256-linux-web.txt && cat SHA256-linux-web.txt
+      - name: Adjuntar al release
+        if: github.event_name == 'release'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "${{ github.event.release.tag_name }}" empaquetar/salida/CHAVAMON-*.deb empaquetar/salida/CHAVAMON-*.AppImage empaquetar/salida/CHAVAMON-*-web.zip empaquetar/salida/SHA256-linux-web.txt --clobber --repo "${{ github.repository }}"
+      - name: Guardar como artefacto
+        if: github.event_name != 'release'
+        uses: actions/upload-artifact@v4
+        with:
+          name: chavamon-linux-web
+          path: |
+            empaquetar/salida/CHAVAMON-*.deb
+            empaquetar/salida/CHAVAMON-*.AppImage
+            empaquetar/salida/CHAVAMON-*-web.zip
+            empaquetar/salida/SHA256-linux-web.txt

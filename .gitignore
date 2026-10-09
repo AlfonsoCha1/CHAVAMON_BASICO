@@ -1,8 +1,12 @@
-node_modules/
-salida/
-build-win/
-*.part
-*.exe
 *.7z
+*.exe
+*.part
 .DS_Store
 Thumbs.db
+build-win/
+empaquetar/app/
+empaquetar/prueba/node_modules/
+empaquetar/salida/
+node_modules/
+publico/
+salida/

@@ -1,4 +1,5 @@
-// Puente mínimo y con lista blanca entre la interfaz y el proceso principal.
+// CHAVAMON — puente mínimo y con lista blanca entre la interfaz y el proceso principal.
+// Se conserva el nombre técnico window.montoya para no romper la interfaz compilada.
 'use strict';
 const { contextBridge, ipcRenderer, webUtils } = require('electron');
 

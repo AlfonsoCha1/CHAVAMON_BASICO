@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CHAVAMON</title>
+<meta name="description" content="CHAVAMON: editor de video gratis y sin marca de agua. Corta, acomoda fotos y videos en capas, agrega música, texto y subtítulos, y exporta MP4 para TikTok, Reels o YouTube. Todo en tu equipo.">
+<meta name="theme-color" content="#070b1a">
+<meta property="og:title" content="CHAVAMON — editor de video sin marca de agua">
+<meta property="og:description" content="Gratis, sin cuentas y sin subir nada. Windows, Linux y en el navegador.">
+<meta property="og:image" content="img/compartir.jpg">
+<link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800;900&family=Roboto+Mono:wght@400;500&display=swap">
+<style>
+/* Misma estructura que la página de Montoya Studio: portada, Diseños, Lo que puedes hacer, Descargar, Cómo está hecho. */
+:root {
+  color-scheme: dark;
+  --noche: #070b1a;
+  --noche-2: #0a1024;
+  --panel: #0e1530;
+  --panel-2: #131c3d;
+  --linea: #22305c;
+  --texto: #eaedf8;
+  --tenue: #9aa4c4;
+  --naranja: #ff7a1a;
+  --naranja-2: #ffa041;
+  --amarillo: #ffc23d;
+  --cian: #2fd3f0;
+  --lima: #b6f04a;
+  --verde: #3ddc97;
+  --ambar: #ffc04d;
+  --rojo: #ff6b6b;
+  --f-titulo: "Montserrat", "Segoe UI", system-ui, sans-serif;
+  --f-texto: "Inter", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "Roboto Mono", ui-monospace, Consolas, monospace;
+  --radio: 16px;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before { animation: none !important; transition: none !important; } }
+body { margin: 0; background: var(--noche); color: var(--texto); font: 16px/1.6 var(--f-texto); -webkit-font-smoothing: antialiased; }
+a { color: var(--cian); }
+img { max-width: 100%; height: auto; display: block; }
+.env { width: 100%; max-width: 1180px; margin: 0 auto; padding-inline: 20px; }
+h1, h2, h3 { font-family: var(--f-titulo); line-height: 1.08; text-wrap: balance; margin: 0; }
+h2 { font-size: clamp(1.9rem, 3.6vw, 2.6rem); font-weight: 900; letter-spacing: -.01em; }
+h3 { font-size: 1rem; font-weight: 800; line-height: 1.25; }
+p { margin: 0; }
+code { font: 500 .82em var(--f-mono); background: var(--panel-2); border: 1px solid var(--linea); border-radius: 6px; padding: 1px 6px; color: var(--texto); overflow-wrap: anywhere; }
+:focus-visible { outline: 3px solid var(--cian); outline-offset: 3px; border-radius: 8px; }
+.ceja { font: 700 .78rem/1 var(--f-texto); letter-spacing: .16em; text-transform: uppercase; color: var(--cian); }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; font: 700 1rem/1 var(--f-texto); text-decoration: none; border-radius: 12px; padding: 16px 22px; border: 1px solid transparent; cursor: pointer; transition: filter .15s, border-color .15s, transform .15s; }
+.btn svg { width: 18px; height: 18px; flex: none; }
+.btn:hover { transform: translateY(-1px); }
+.btn.nar { background: linear-gradient(180deg, var(--naranja-2), var(--naranja)); color: #fff; box-shadow: 0 12px 34px -12px rgba(255, 122, 26, .75); }
+.btn.nar:hover { filter: brightness(1.07); }
+.btn.osc { background: #0b1226; color: var(--texto); border-color: rgba(47, 211, 240, .45); }
+.btn.osc:hover { border-color: var(--cian); }
+.btn .peso { font: 500 .78rem var(--f-texto); opacity: .85; }
+.btn.chico { padding: 11px 16px; font-size: .92rem; }
+.btn[aria-disabled="true"] { opacity: .45; pointer-events: none; box-shadow: none; }
+
+/* barra */
+.barra { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: rgba(7, 11, 26, .86); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(34, 48, 92, .8); }
+.barra .env { display: flex; align-items: center; gap: 18px; min-height: 68px; }
+.marca { display: flex; align-items: center; gap: 10px; text-decoration: none; min-width: 0; }
+.marca .sim { width: 34px; height: 34px; }
+.marca .letras { height: 21px; width: auto; }
+.barra nav { display: flex; gap: 26px; margin-left: auto; }
+.barra nav a { color: #c9d0e6; text-decoration: none; font-weight: 500; font-size: .95rem; }
+.barra nav a:hover { color: #fff; }
+@media (max-width: 860px) { .barra nav { display: none; } .barra .btn { margin-left: auto; } }
+
+/* portada */
+.portada { position: relative; overflow: hidden; }
+.portada::before { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(700px 480px at 6% 100%, rgba(255, 122, 26, .22), transparent 65%), radial-gradient(800px 520px at 88% 18%, rgba(123, 47, 247, .18), transparent 65%), radial-gradient(600px 400px at 60% 90%, rgba(47, 211, 240, .08), transparent 70%); }
+.portada .env { position: relative; display: grid; grid-template-columns: minmax(0, .92fr) minmax(0, 1.08fr); gap: 40px; align-items: center; padding-block: 64px 72px; }
+.portada h1 { font-size: clamp(2.5rem, 5.4vw, 4rem); font-weight: 900; letter-spacing: -.02em; margin-top: 16px; }
+.portada h1 em { font-style: normal; background: linear-gradient(90deg, var(--naranja), var(--amarillo)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.portada .sub { color: #c3cae0; font-size: 1.08rem; margin-top: 20px; max-width: 46ch; }
+.portada .acciones { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+.recom { margin-top: 14px; color: var(--tenue); font-size: .88rem; }
+.recom b { color: var(--texto); font-weight: 600; }
+.sellos { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; max-width: 470px; }
+.sellos span { display: inline-flex; align-items: center; gap: 6px; font: 600 .8rem var(--f-texto); color: var(--texto); background: rgba(19, 28, 61, .8); border: 1px solid var(--linea); border-radius: 999px; padding: 6px 12px; }
+.sellos svg { width: 14px; height: 14px; color: var(--lima); }
+.escena { position: relative; padding-bottom: 9%; padding-right: 4%; }
+.escena .pc { border-radius: 14px; overflow: hidden; border: 1px solid #2a3970; box-shadow: 0 40px 90px -30px rgba(0, 0, 0, .9), 0 0 0 6px rgba(14, 21, 48, .9); transform: perspective(1600px) rotateY(-7deg) rotateX(2deg); }
+.escena .tel { position: absolute; right: 0; bottom: 0; width: 26%; border-radius: 24px; overflow: hidden; border: 5px solid #1a2550; box-shadow: 0 30px 60px -20px rgba(0, 0, 0, .9); background: #000; }
+@media (max-width: 960px) { .portada .env { grid-template-columns: minmax(0, 1fr); padding-block: 40px 48px; } .escena { max-width: 680px; } }
+
+section { padding-block: 80px; }
+section.alt { background: var(--noche-2); border-block: 1px solid rgba(34, 48, 92, .6); }
+.cab { display: grid; gap: 10px; margin-bottom: 28px; }
+.cab p { color: var(--tenue); }
+.cab p b { color: var(--lima); font-weight: 600; }
+
+/* diseños */
+.pestanas { display: inline-flex; gap: 4px; padding: 4px; border: 1px solid var(--linea); border-radius: 12px; background: var(--panel); margin-bottom: 22px; }
+.pestanas button { font: 600 .9rem var(--f-texto); color: var(--tenue); background: none; border: 0; border-radius: 9px; padding: 9px 16px; cursor: pointer; }
+.pestanas button[aria-selected="true"] { background: var(--panel-2); color: #fff; box-shadow: inset 0 0 0 1px rgba(47, 211, 240, .5); }
+.rejilla { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px 18px; }
+.rejilla.tel { max-width: 760px; }
+.rejilla figure { margin: 0; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.rejilla button.foto { padding: 0; border: 1px solid var(--linea); border-radius: 10px; overflow: hidden; background: #000; cursor: zoom-in; display: block; width: 100%; transition: border-color .15s, transform .15s; }
+.rejilla button.foto:hover { border-color: var(--cian); transform: translateY(-2px); }
+.rejilla figcaption { color: #c3cae0; font-size: .86rem; line-height: 1.45; }
+@media (max-width: 860px) { .rejilla { grid-template-columns: repeat(2, minmax(0, 1fr)); } .rejilla.tel { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .rejilla { grid-template-columns: minmax(0, 1fr); } .rejilla.tel { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; } .rejilla.tel figcaption { font-size: .76rem; } }
+dialog.zoom { padding: 0; border: 1px solid var(--linea); border-radius: 14px; background: #000; max-width: min(1200px, 94vw); max-height: 92vh; }
+dialog.zoom::backdrop { background: rgba(3, 6, 15, .86); }
+dialog.zoom img { max-height: 86vh; width: auto; margin: 0 auto; }
+dialog.zoom button { position: absolute; top: 10px; right: 10px; font: 700 .9rem var(--f-texto); background: rgba(14, 21, 48, .92); color: #fff; border: 1px solid var(--linea); border-radius: 10px; padding: 8px 12px; cursor: pointer; }
+
+/* funciones */
+.tarjetas { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.tarjeta { background: var(--panel); border: 1px solid var(--linea); border-radius: var(--radio); padding: 22px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.tarjeta .ico { width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center; margin-bottom: 6px; }
+.tarjeta .ico svg { width: 16px; height: 16px; }
+.tarjeta p { color: var(--tenue); font-size: .92rem; }
+.c1 { background: rgba(255, 140, 50, .22); color: #ff9a3d; }
+.c2 { background: rgba(47, 211, 240, .18); color: var(--cian); }
+.c3 { background: rgba(182, 240, 74, .18); color: var(--lima); }
+.c4 { background: rgba(160, 120, 255, .22); color: #b9a0ff; }
+@media (max-width: 960px) { .tarjetas { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 600px) { .tarjetas { grid-template-columns: minmax(0, 1fr); } }
+
+/* descargar */
+.estado { display: inline-flex; align-items: center; gap: 8px; font-size: .8rem; color: var(--tenue); border: 1px solid var(--linea); border-radius: 999px; padding: 4px 11px; width: fit-content; }
+.estado .punto { width: 7px; height: 7px; border-radius: 50%; background: var(--ambar); animation: latido 1.6s infinite; }
+.estado[data-estado="ok"] .punto { background: var(--verde); animation: none; }
+.estado[data-estado="dormido"] .punto { background: var(--rojo); animation: none; }
+@keyframes latido { 0% { box-shadow: 0 0 0 0 rgba(255, 192, 77, .55); } 70% { box-shadow: 0 0 0 8px rgba(255, 192, 77, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 192, 77, 0); } }
+.descargas { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.plat { position: relative; background: var(--panel); border: 1px solid var(--linea); border-radius: var(--radio); padding: 22px; display: grid; gap: 12px; align-content: start; min-width: 0; }
+.plat.reco { border-color: var(--naranja); box-shadow: 0 0 0 1px rgba(255, 122, 26, .35), 0 20px 50px -30px rgba(255, 122, 26, .6); }
+.plat .banda { position: absolute; top: -12px; left: 16px; font: 700 .72rem var(--f-texto); background: var(--naranja); color: #fff; border-radius: 999px; padding: 4px 10px; }
+.plat .tit { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.plat .tit h3 { font-size: 1.15rem; }
+.chip { font: 700 .72rem var(--f-texto); color: var(--cian); border: 1px solid rgba(47, 211, 240, .5); border-radius: 999px; padding: 3px 9px; white-space: nowrap; }
+.plat p { color: var(--tenue); font-size: .92rem; }
+.plat p.ok { color: var(--lima); font-size: .84rem; }
+.plat p.pend { font-size: .84rem; }
+.plat .btn { width: 100%; }
+.plat details { color: var(--tenue); font-size: .84rem; }
+.plat summary { cursor: pointer; }
+.plat details code { display: block; margin-top: 6px; font-size: .72rem; line-height: 1.5; padding: 8px 10px; }
+.plat.pronto { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 14px 24px; border-style: dashed; }
+.plat.pronto .izq { display: grid; gap: 6px; justify-items: start; }
+.plat.pronto .txt { flex: 1 1 360px; }
+.plat.pronto .btn { width: auto; }
+@media (max-width: 960px) { .descargas { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 640px) { .descargas { grid-template-columns: minmax(0, 1fr); } }
+.notas { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; margin-top: 28px; }
+.notas div { border-left: 3px solid var(--linea); padding-left: 16px; display: grid; gap: 6px; align-content: start; min-width: 0; }
+.notas h3 { font-family: var(--f-texto); font-weight: 700; font-size: .96rem; }
+.notas p { color: var(--tenue); font-size: .88rem; }
+.notas b { color: var(--texto); }
+@media (max-width: 860px) { .notas { grid-template-columns: minmax(0, 1fr); } }
+
+/* cómo está hecho */
+.hecho { display: grid; grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr); gap: 18px; }
+.hecho .caja { background: var(--panel); border: 1px solid var(--linea); border-radius: var(--radio); padding: 22px; display: grid; gap: 14px; align-content: start; min-width: 0; }
+.hecho .caja p { color: #c3cae0; font-size: .95rem; }
+.techs { display: flex; flex-wrap: wrap; gap: 8px; }
+.techs span { font: 700 .8rem var(--f-texto); background: var(--panel-2); border: 1px solid var(--linea); border-radius: 8px; padding: 6px 10px; }
+.cifras { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.cifra { background: var(--panel); border: 1px solid var(--linea); border-radius: var(--radio); padding: 20px; display: grid; gap: 6px; align-content: start; }
+.cifra b { font: 900 2.2rem/1 var(--f-titulo); color: var(--naranja-2); font-variant-numeric: tabular-nums; }
+.cifra span { color: var(--tenue); font-size: .88rem; }
+@media (max-width: 900px) { .hecho { grid-template-columns: minmax(0, 1fr); } }
+
+footer { border-top: 1px solid var(--linea); padding-block: 36px 48px; }
+footer .env { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; color: var(--tenue); font-size: .86rem; }
+footer .letras { height: 19px; width: auto; margin-bottom: 12px; }
+footer .der { display: grid; gap: 8px; align-content: start; }
+@media (max-width: 700px) { footer .env { grid-template-columns: minmax(0, 1fr); } }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-ok" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" d="m5 12 5 5 9-10"/></symbol>
+  <symbol id="i-desc" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m0 0-5-5m5 5 5-5M4 19h16"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path fill="currentColor" d="M7 4.5v15l12.5-7.5z"/></symbol>
+</svg>
+
+<header class="barra">
+  <div class="env">
+    <a class="marca" href="#" aria-label="CHAVAMON, inicio">
+      <img class="sim" src="img/simbolo.png" alt="" width="34" height="34">
+      <img class="letras" src="img/letras.png" alt="CHAVAMON" width="158" height="21">
+    </a>
+    <nav aria-label="Secciones">
+      <a href="#disenos">Diseños</a>
+      <a href="#funciones">Funciones</a>
+      <a href="#descargar">Descargar</a>
+      <a href="#hecho">Cómo está hecho</a>
+    </nav>
+    <a class="btn nar chico" href="#descargar">Descargar</a>
+  </div>
+</header>
+
+<main>
+  <div class="portada">
+    <div class="env">
+      <div>
+        <span class="ceja">Editor de video · versión <span class="js-version">0.1.1</span></span>
+        <h1>Edita tus videos <em>sin marca de agua</em>, sin cuentas y sin subir nada.</h1>
+        <p class="sub">CHAVAMON trabaja en tu propio equipo: corta, acomoda fotos y videos en capas, agrega música, texto y subtítulos, y exporta MP4 listo para TikTok, Reels o YouTube.</p>
+        <div class="acciones">
+          <a class="btn nar" id="hero-descarga" href="#descargar"><svg><use href="#i-desc"/></svg>Descargar gratis</a>
+          <a class="btn osc" href="app/"><svg><use href="#i-play"/></svg>Probar en el navegador</a>
+        </div>
+        <p class="recom" id="recom">Recomendado para ti: <b>Windows de 64 bits</b> · también Windows, Linux y Web</p>
+        <div class="sellos">
+          <span><svg><use href="#i-ok"/></svg>Sin marca de agua</span>
+          <span><svg><use href="#i-ok"/></svg>Sin suscripciones</span>
+          <span><svg><use href="#i-ok"/></svg>Sin telemetría</span>
+          <span><svg><use href="#i-ok"/></svg>Funciona sin internet</span>
+        </div>
+      </div>
+      <div class="escena">
+        <img class="pc" src="img/pc1_capas.jpg" alt="Editor de CHAVAMON: video de atardecer con una foto en recuadro, título y subtítulo" width="1440" height="900">
+        <img class="tel" src="img/tel2_editor.jpg" alt="Editor de CHAVAMON en teléfono con un reel vertical de playa" width="390" height="844">
+      </div>
+    </div>
+  </div>
+
+  <section id="disenos">
+    <div class="env">
+      <div class="cab">
+        <h2>Diseños</h2>
+        <p>Pantallas reales de la app (capturas sin retoque). Toca una para verla en grande.</p>
+      </div>
+      <div class="pestanas" role="tablist" aria-label="Tipo de pantalla">
+        <button role="tab" id="tab-pc" aria-selected="true" aria-controls="panel-pc">Computadora</button>
+        <button role="tab" id="tab-tel" aria-selected="false" aria-controls="panel-tel">Teléfono</button>
+      </div>
+      <div class="rejilla" id="panel-pc" role="tabpanel" aria-labelledby="tab-pc">
+        <figure><button class="foto" type="button"><img src="img/pc1_capas.jpg" alt="Editor con capas" width="1440" height="900"></button><figcaption>Editor con capas: foto en recuadro encima del video, música, texto y subtítulos</figcaption></figure>
+        <figure><button class="foto" type="button"><img src="img/pc2_proyectos.jpg" alt="Mis proyectos" width="1440" height="900"></button><figcaption>Mis proyectos, con miniaturas y autoguardado</figcaption></figure>
+        <figure><button class="foto" type="button"><img src="img/pc3_efectos.jpg" alt="Efectos de color" width="1440" height="900"></button><figcaption>Efectos de color con vista previa en tiempo real</figcaption></figure>
+        <figure><button class="foto" type="button"><img src="img/pc4_texto.jpg" alt="Plantillas de texto" width="1440" height="900"></button><figcaption>Plantillas de texto, fuentes y animaciones</figcaption></figure>
+        <figure><button class="foto" type="button"><img src="img/pc5_formato.jpg" alt="Formato y encuadre 9:16 con fondo desenfocado" width="1440" height="900"></button><figcaption>Pasar a 9:16 con fondo desenfocado, sin deformar</figcaption></figure>
+        <figure><button class="foto" type="button"><img src="img/pc6_exportar.jpg" alt="Exportar video" width="1440" height="900"></button><figcaption>Exportar MP4 (H.264 + AAC), sin marca de agua</figcaption></figure>
+      </div>
+      <div class="rejilla tel" id="panel-tel" role="tabpanel" aria-labelledby="tab-tel" hidden>
+        <figure><button class="foto" type="button"><img src="img/tel1_proyectos.jpg" alt="Mis proyectos en teléfono" width="390" height="844"></button><figcaption>Mis proyectos</figcaption></figure>
+        <figure><button class="foto" type="button"><img src="img/tel2_editor.jpg" alt="Editor en teléfono" width="390" height="844"></button><figcaption>Editor con herramientas abajo: Medios, Encima, Cortar, Audio, Texto y Subtítulos</figcaption></figure>
+        <figure><button class="foto" type="button"><img src="img/tel3_exportar.jpg" alt="Exportar en teléfono" width="390" height="844"></button><figcaption>Exportar en 1080p sin marca de agua</figcaption></figure>
+      </div>
+    </div>
+  </section>
+  <dialog class="zoom" id="zoom"><img id="zoom-img" alt=""><button type="button" id="zoom-cerrar">Cerrar</button></dialog>
+
+  <section id="funciones" class="alt">
+    <div class="env">
+      <div class="cab">
+        <h2>Lo que puedes hacer</h2>
+        <p>Lo esencial para editar videos para redes, sin pagar ni crear cuentas.</p>
+      </div>
+      <div class="tarjetas">
+        <div class="tarjeta"><span class="ico c1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><rect x="3" y="3" width="13" height="13" rx="2"/><rect x="8" y="8" width="13" height="13" rx="2"/></svg></span><h3>Capas (renglones)</h3><p>Arrastra una foto o un video a otro renglón y se ve encima mientras el video principal sigue. Pantalla completa o recuadro en una esquina.</p></div>
+        <div class="tarjeta"><span class="ico c2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.1 15.9M14.5 14.5 20 20M8.1 8.1 12 12"/></svg></span><h3>Cortar y acomodar</h3><p>Divide en el cabezal, recorta con las asas, reordena arrastrando, imán, deshacer y rehacer (150 pasos).</p></div>
+        <div class="tarjeta"><span class="ico c3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 6V4h14v2M9 20h6M12 4v16"/></svg></span><h3>Texto y subtítulos</h3><p>Plantillas, fuentes, contorno, sombra y animaciones. Subtítulos con estilo común e importación/exportación SRT.</p></div>
+        <div class="tarjeta"><span class="ico c4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span><h3>Música y audio</h3><p>Música incluida de uso libre, tus propios audios, volumen por clip y fundidos de entrada y salida.</p></div>
+        <div class="tarjeta"><span class="ico c1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="7" y="2" width="10" height="20" rx="2"/></svg></span><h3>9:16 · 16:9 · 1:1</h3><p>Cambia de formato sin deformar: recortar para llenar, completo con bordes o fondo desenfocado. Crea variantes sin tocar el original.</p></div>
+        <div class="tarjeta"><span class="ico c2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 1.9 5.8L20 10l-5 3.9L16.5 20 12 16.7 7.5 20 9 13.9 4 10l6.1-1.2z"/></svg></span><h3>Efectos y transiciones</h3><p>10 efectos de color y ajuste manual, transiciones de fundido, destello y zoom. Paquetes de recursos propios.</p></div>
+        <div class="tarjeta"><span class="ico c3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 19h16"/></svg></span><h3>Exportar MP4</h3><p>H.264 + AAC de 720p a 4K según tu equipo, de 24 a 60 fps, con progreso, cancelación y control de espacio libre.</p></div>
+        <div class="tarjeta"><span class="ico c4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg></span><h3>Nada se pierde</h3><p>Autoguardado continuo, copia de respaldo, recuperación tras un cierre inesperado y aviso de archivos movidos.</p></div>
+        <div class="tarjeta"><span class="ico c1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/></svg></span><h3>Privado de verdad</h3><p>Tus videos se procesan y guardan solo en tu dispositivo. Sin telemetría, sin servidores y sin publicar nada por ti.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="descargar">
+    <div class="env">
+      <div class="cab">
+        <h2>Descargar</h2>
+        <p>Gratis. Elige tu sistema. <b id="detectado"></b></p>
+      </div>
+      <div class="descargas">
+        <div class="plat reco" id="plat-x64">
+          <span class="banda" id="banda-x64">Recomendado para tu equipo</span>
+          <div class="tit"><h3>Windows 10/11</h3><span class="chip">64 bits · x64</span></div>
+          <p>La opción para casi todas las PC con Intel o AMD.</p>
+          <a class="btn nar dl" data-archivo="windows-x64.exe">Instalador .exe <span class="peso"></span></a>
+          <a class="btn osc dl" data-archivo="windows-x64-portable.zip">Portátil .zip <span class="peso"></span></a>
+          <p class="pend">Compilado; pendiente de probar en Windows 10 y 11.</p>
+          <details><summary>Huella SHA256</summary><code class="sha" data-de="windows-x64.exe">Se muestra al publicar la versión.</code></details>
+        </div>
+        <div class="plat" id="plat-arm">
+          <div class="tit"><h3>Windows 11</h3><span class="chip">ARM64</span></div>
+          <p>Para laptops con procesador ARM (Snapdragon, Surface Pro X).</p>
+          <a class="btn nar dl" data-archivo="windows-arm64.exe">Instalador .exe <span class="peso"></span></a>
+          <p class="pend">Compilado; pendiente de probar en un equipo ARM.</p>
+          <details><summary>Huella SHA256</summary><code class="sha" data-de="windows-arm64.exe">Se muestra al publicar la versión.</code></details>
+        </div>
+        <div class="plat" id="plat-ia32">
+          <div class="tit"><h3>Windows 10</h3><span class="chip">32 bits</span></div>
+          <p>Electron, el motor de la app de escritorio, ya no tiene versión para Windows de 32 bits. En esos equipos usa el editor web.</p>
+          <a class="btn osc" href="app/">Usar el editor web</a>
+          <p class="pend">Instalador de 32 bits: no disponible.</p>
+        </div>
+        <div class="plat" id="plat-linux">
+          <div class="tit"><h3>Linux</h3><span class="chip">64 bits</span></div>
+          <p>Linux Mint, Ubuntu, Debian y derivados (.deb), o cualquier distribución (AppImage).</p>
+          <a class="btn nar dl" data-archivo="linux-amd64.deb">Paquete .deb <span class="peso"></span></a>
+          <a class="btn osc dl" data-archivo="linux-x86_64.AppImage">AppImage <span class="peso"></span></a>
+          <p class="ok">✓ Probado en Ubuntu 24.04 (base de Linux Mint 22)</p>
+          <details><summary>Huellas SHA256</summary><code class="sha" data-de="linux-amd64.deb">Se muestra al publicar la versión.</code><code class="sha" data-de="linux-x86_64.AppImage"></code></details>
+        </div>
+        <div class="plat" id="plat-web">
+          <div class="tit"><h3>Navegador</h3><span class="chip">Web / PWA</span></div>
+          <p>Sin instalar nada. En Chrome o Edge (computadora y Android) también puedes instalarla como app.</p>
+          <a class="btn nar" href="app/">Abrir el editor web</a>
+          <a class="btn osc dl" data-archivo="web.zip">Archivos web .zip <span class="peso"></span></a>
+          <p class="pend">Probado en Chromium. Los proyectos se guardan en ese navegador.</p>
+        </div>
+        <div class="plat" id="plat-ios">
+          <div class="tit"><h3>iPhone / iPad</h3><span class="chip">iOS 16.4+</span></div>
+          <p>Abre el editor web en <b>Safari</b> y elige <i>Compartir → Agregar a pantalla de inicio</i>.</p>
+          <a class="btn nar" href="app/">Abrir en Safari</a>
+          <p class="pend">Sin probar todavía en iPhone. App nativa: más adelante.</p>
+        </div>
+        <div class="plat pronto">
+          <div class="izq"><h3>macOS · Android</h3><span class="chip">Próximamente</span></div>
+          <p class="txt">El proyecto ya está preparado para Mac y Android; falta compilarlo y probarlo en esos equipos. Mientras, usa el editor web.</p>
+          <a class="btn osc chico" href="app/">Usar el editor web</a>
+        </div>
+      </div>
+      <div class="notas">
+        <div><h3>Windows: "Windows protegió su PC"</h3><p>El instalador no tiene firma de pago, así que Windows lo avisa. Haz clic en <b>Más información → Ejecutar de todas formas</b>. Puedes revisar la huella SHA256 con <code>certutil -hashfile archivo SHA256</code>.</p></div>
+        <div><h3>Linux</h3><p><code>sudo apt install ./CHAVAMON-0.1.1-linux-amd64.deb</code> y búscalo en el menú. AppImage: <code>chmod +x</code> y ábrelo (puede pedir <code>libfuse2</code>).</p></div>
+        <div><h3>Videos del iPhone</h3><p>Si un video HEVC no se puede abrir en tu equipo, la app te lo dice. En el iPhone: <b>Ajustes → Cámara → Formatos → Más compatible</b>.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="hecho" class="alt">
+    <div class="env">
+      <div class="cab">
+        <h2>Cómo está hecho</h2>
+        <p>Un mismo núcleo para computadora, teléfono y web.</p>
+      </div>
+      <div class="hecho">
+        <div class="caja">
+          <h3>Tecnología</h3>
+          <div class="techs"><span>TypeScript</span><span>React 19</span><span>WebCodecs</span><span>Mediabunny (MP4)</span><span>Web Audio</span><span>WebGL</span><span>Electron (Windows · Linux · macOS)</span><span>Capacitor (Android · iOS)</span><span>PWA + OPFS</span><span>Zustand · Immer</span><span>Vite</span><span>Playwright</span></div>
+          <p>El video se decodifica, se mezcla y se codifica con WebCodecs dentro de tu equipo; los efectos de color usan WebGL y el audio, Web Audio. En la versión de escritorio la ventana corre aislada y la interfaz no puede conectarse a internet.</p>
+        </div>
+        <div class="cifras">
+          <div class="cifra"><b>0</b><span>marcas de agua en lo que exportas</span></div>
+          <div class="cifra"><b>34</b><span>comprobaciones de punta a punta (escritorio, Linux y web)</span></div>
+          <div class="cifra"><b>4K</b><span>exportación máxima, hasta 60 fps</span></div>
+          <div class="cifra"><b>0</b><span>servicios de pago, cuentas o rastreadores</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="env">
+    <div>
+      <img class="letras" src="img/letras.png" alt="CHAVAMON" width="143" height="19">
+      <p>Proyecto personal de <a href="https://github.com/AlfonsoCha1" rel="noopener">Alfonso</a>. Uso gratuito. Código: todos los derechos reservados.</p>
+      <p style="margin-top:10px"><span class="estado" id="estado" data-estado="despertando" role="status" aria-live="polite"><span class="punto" aria-hidden="true"></span><span id="estado-txt">Despertando el servidor…</span></span></p>
+    </div>
+    <div class="der">
+      <p>Esta página no usa cookies ni analíticas. "CHAVAMON" es el nombre del proyecto; no es una marca registrada.</p>
+      <p>Música incluida: CC0. Componentes de terceros con sus licencias (MPL-2.0, MIT, OFL y otras).</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const REPO = 'AlfonsoCha1/CHAVAMON_BASICO';
+  const VERSION = '0.1.1';
+  const SERVIDOR = 'https://chavamon-servidor.onrender.com';
+  const base = (v) => `https://github.com/${REPO}/releases/download/v${v}/CHAVAMON-${v}-`;
+
+  // Enlaces de descarga: archivos del release de GitHub con el nombre CHAVAMON-<versión>-<sistema>.
+  const botones = [...document.querySelectorAll('.dl')];
+  botones.forEach((b) => { b.href = base(VERSION) + b.dataset.archivo; });
+
+  // Sistema del visitante: solo para recomendar; no se envía a ningún lado.
+  const ua = navigator.userAgent;
+  const reco = (id, texto, recom) => {
+    document.querySelectorAll('.plat.reco').forEach((p) => p.classList.remove('reco'));
+    $('banda-x64').hidden = id !== 'plat-x64';
+    $(id).classList.add('reco');
+    $('detectado').textContent = 'Detectamos: ' + texto + '.';
+    $('recom').innerHTML = 'Recomendado para ti: <b>' + recom + '</b> · también Windows, Linux y Web';
+  };
+  if (/Windows NT/.test(ua)) {
+    if (/ARM64|aarch64/i.test(ua)) reco('plat-arm', 'Windows ARM', 'Windows ARM64');
+    else if (/WOW64|Win64|x64/i.test(ua)) reco('plat-x64', 'Windows de 64 bits', 'Windows de 64 bits');
+    else reco('plat-ia32', 'Windows de 32 bits', 'editor web');
+  } else if (/iPhone|iPad|iPod/.test(ua)) reco('plat-ios', 'iPhone o iPad', 'editor web en Safari');
+  else if (/Android/.test(ua)) reco('plat-web', 'Android', 'editor web');
+  else if (/Linux/.test(ua)) reco('plat-linux', 'Linux', 'Linux (.deb o AppImage)');
+  else if (/Mac OS X/.test(ua)) reco('plat-web', 'macOS', 'editor web');
+  $('hero-descarga').href = '#descargar';
+
+  // Pestañas Computadora / Teléfono
+  const tabs = [['tab-pc', 'panel-pc'], ['tab-tel', 'panel-tel']];
+  tabs.forEach(([t]) => $(t).addEventListener('click', () => {
+    tabs.forEach(([t2, p2]) => { $(t2).setAttribute('aria-selected', String(t2 === t)); $(p2).hidden = t2 !== t; });
+  }));
+
+  // Ver captura en grande
+  const zoom = $('zoom');
+  document.querySelectorAll('button.foto').forEach((b) => b.addEventListener('click', () => {
+    const img = b.querySelector('img');
+    $('zoom-img').src = img.src; $('zoom-img').alt = img.alt;
+    if (zoom.showModal) zoom.showModal(); else window.open(img.src, '_blank');
+  }));
+  $('zoom-cerrar').addEventListener('click', () => zoom.close());
+  zoom.addEventListener('click', (e) => { if (e.target === zoom) zoom.close(); });
+
+  // Tamaños, huellas y disponibilidad: se leen del release publicado en GitHub.
+  const mb = (b) => Math.round(b / 1048576) + ' MB';
+  fetch(`https://api.github.com/repos/${REPO}/releases/latest`, { headers: { Accept: 'application/vnd.github+json' } })
+    .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
+    .then((rel) => {
+      const v = String(rel.tag_name || '').replace(/^v/, '') || VERSION;
+      document.querySelectorAll('.js-version').forEach((n) => { n.textContent = v; });
+      const assets = rel.assets || [];
+      botones.forEach((b) => {
+        const a = assets.find((x) => x.name.endsWith('-' + b.dataset.archivo));
+        if (a) { b.href = a.browser_download_url; b.querySelector('.peso').textContent = mb(a.size); }
+        else b.setAttribute('aria-disabled', 'true');
+      });
+      document.querySelectorAll('.sha').forEach((c) => {
+        const a = assets.find((x) => x.name.endsWith('-' + c.dataset.de));
+        c.textContent = a && a.digest ? a.name + ': ' + a.digest.replace(/^sha256:/, '') : (c.textContent && !a ? c.textContent : '');
+        c.hidden = !c.textContent;
+      });
+    })
+    .catch(() => { /* sin release todavía: los botones quedan con el enlace esperado */ });
+
+  // Servidor gratis de Render: se duerme tras 15 min sin visitas; esta página lo despierta al abrirse.
+  const estado = $('estado'), txt = $('estado-txt');
+  const poner = (e, t) => { estado.dataset.estado = e; txt.textContent = t; };
+  (async () => {
+    const t0 = performance.now();
+    const aviso = setTimeout(() => poner('despertando', 'Despertando el servidor (cerca de un minuto)…'), 4000);
+    try {
+      const r = await fetch(SERVIDOR + '/salud', { cache: 'no-store', signal: AbortSignal.timeout(90000) });
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      clearTimeout(aviso);
+      poner('ok', 'Servidor en línea · ' + ((performance.now() - t0) / 1000).toFixed(1) + ' s');
+    } catch (e) {
+      clearTimeout(aviso);
+      poner('dormido', 'Servidor dormido · las descargas funcionan igual');
+    }
+  })();
+})();
+</script>
+</body>
+</html>
