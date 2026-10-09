@@ -43,7 +43,19 @@ La ventana corre aislada (`contextIsolation` + `sandbox`) y se comunica con el s
 
 ## Descargar
 
-Instalador para Windows 10 y 11 de 64 bits en [Releases](https://github.com/AlfonsoCha1/CHAVAMON_BASICO/releases). La página de descarga está en `web/` y se publica en Vercel junto con el editor web (`/app/`).
+Página: **https://chavamon.vercel.app** (con el editor web en `/app/`).
+
+Los instaladores están en [Releases](https://github.com/AlfonsoCha1/CHAVAMON_BASICO/releases):
+
+| Sistema | Archivo |
+|---|---|
+| Windows 10/11, 64 bits | `CHAVAMON-<versión>-windows-x64.exe` y versión portátil `.zip` |
+| Windows 11 ARM64 | `CHAVAMON-<versión>-windows-arm64.exe` |
+| Windows 32 bits | `CHAVAMON-<versión>-windows-ia32.exe` |
+| Linux (Mint, Ubuntu, Debian) | `CHAVAMON-<versión>-linux-amd64.deb` y `.AppImage` |
+| Navegador | `CHAVAMON-<versión>-web.zip` |
+
+Los arma el flujo [Instaladores](.github/workflows/instaladores.yml) cuando se publica un release. Antes de subirlos, prueba la app ya instalada en Windows y en Ubuntu: abre, importa un clip y exporta un MP4.
 
 ## Probarlo desde el código
 
