@@ -302,10 +302,9 @@ footer .der { display: grid; gap: 8px; align-content: start; }
         </div>
         <div class="plat" id="plat-ia32">
           <div class="tit"><h3>Windows 10</h3><span class="chip">32 bits</span></div>
-          <p>Solo para equipos viejos con Windows de 32 bits.</p>
-          <a class="btn nar dl" data-archivo="windows-ia32.exe">Instalador .exe <span class="peso"></span></a>
-          <p class="pend">Compilado; pendiente de probar en un equipo de 32 bits.</p>
-          <details><summary>Huella SHA256</summary><code class="sha" data-de="windows-ia32.exe">Se muestra al publicar la versión.</code></details>
+          <p>Electron, el motor de la app de escritorio, ya no tiene versión para Windows de 32 bits. En esos equipos usa el editor web.</p>
+          <a class="btn osc" href="app/">Usar el editor web</a>
+          <p class="pend">Instalador de 32 bits: no disponible.</p>
         </div>
         <div class="plat" id="plat-linux">
           <div class="tit"><h3>Linux</h3><span class="chip">64 bits</span></div>
@@ -403,7 +402,7 @@ footer .der { display: grid; gap: 8px; align-content: start; }
   if (/Windows NT/.test(ua)) {
     if (/ARM64|aarch64/i.test(ua)) reco('plat-arm', 'Windows ARM', 'Windows ARM64');
     else if (/WOW64|Win64|x64/i.test(ua)) reco('plat-x64', 'Windows de 64 bits', 'Windows de 64 bits');
-    else reco('plat-ia32', 'Windows de 32 bits', 'Windows de 32 bits');
+    else reco('plat-ia32', 'Windows de 32 bits', 'editor web');
   } else if (/iPhone|iPad|iPod/.test(ua)) reco('plat-ios', 'iPhone o iPad', 'editor web en Safari');
   else if (/Android/.test(ua)) reco('plat-web', 'Android', 'editor web');
   else if (/Linux/.test(ua)) reco('plat-linux', 'Linux', 'Linux (.deb o AppImage)');

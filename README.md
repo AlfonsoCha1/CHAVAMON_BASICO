@@ -51,7 +51,6 @@ Los instaladores están en [Releases](https://github.com/AlfonsoCha1/CHAVAMON_BA
 |---|---|
 | Windows 10/11, 64 bits | `CHAVAMON-<versión>-windows-x64.exe` y versión portátil `.zip` |
 | Windows 11 ARM64 | `CHAVAMON-<versión>-windows-arm64.exe` |
-| Windows 32 bits | `CHAVAMON-<versión>-windows-ia32.exe` |
 | Linux (Mint, Ubuntu, Debian) | `CHAVAMON-<versión>-linux-amd64.deb` y `.AppImage` |
 | Navegador | `CHAVAMON-<versión>-web.zip` |
 

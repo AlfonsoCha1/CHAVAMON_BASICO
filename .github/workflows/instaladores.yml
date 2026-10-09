@@ -26,13 +26,12 @@ jobs:
           node-version: 22
       - name: Preparar la app
         run: node empaquetar/preparar.mjs
-      - name: Instaladores (64 bits, ARM64, 32 bits) y portátil
+      - name: Instaladores (64 bits y ARM64) y portátil
         shell: bash
         working-directory: empaquetar/app
         run: |
           npx --yes electron-builder@26.0.12 --win nsis --x64   --config ../electron-builder.yml --publish never
           npx --yes electron-builder@26.0.12 --win nsis --arm64 --config ../electron-builder.yml --publish never
-          npx --yes electron-builder@26.0.12 --win nsis --ia32  --config ../electron-builder.yml --publish never
           npx --yes electron-builder@26.0.12 --win zip  --x64   --config ../electron-builder.yml --publish never
           ls -la ../salida
       - name: Prueba en Windows (instalación silenciosa, importar y exportar)
