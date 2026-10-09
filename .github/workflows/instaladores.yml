@@ -1,12 +1,16 @@
 # Arma los instaladores de CHAVAMON y los adjunta al release publicado.
 # Para usarlo: en GitHub crea un release (por ejemplo v0.1.1) y publícalo; este flujo construye,
 # prueba y sube los archivos solo. También se puede correr a mano desde la pestaña Actions
-# (en ese caso deja los archivos como artefactos, sin tocar ningún release).
+# o se corre solo al subir cambios a la rama cambio-marca-chavamon (en esos casos deja los
+# archivos como artefactos, sin tocar ningún release).
 name: Instaladores
 
 on:
   release:
     types: [published]
+  push:
+    branches: [cambio-marca-chavamon]
+    paths: ['dist/**', 'electron/**', 'empaquetar/**', 'package.json', '.github/workflows/instaladores.yml']
   workflow_dispatch:
 
 permissions:
