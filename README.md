@@ -41,7 +41,11 @@ Electron 44 · React 19 · Mediabunny (codificación con WebCodecs) · Zustand �
 
 La ventana corre aislada (`contextIsolation` + `sandbox`) y se comunica con el sistema por un puente con lista blanca de canales.
 
-## Probarlo
+## Descargar
+
+Instalador para Windows 10 y 11 de 64 bits en [Releases](https://github.com/AlfonsoCha1/CHAVAMON_BASICO/releases). La página de descarga está en `web/`.
+
+## Probarlo desde el código
 
 Este repositorio contiene la **versión compilada** de la app (la interfaz ya empaquetada con Vite y el proceso principal de Electron). Para abrirla necesitas [Node.js](https://nodejs.org):
 

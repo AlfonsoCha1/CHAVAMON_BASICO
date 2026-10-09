@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CHAVAMON</title>
+<meta name="description" content="CHAVAMON: editor de video local para Windows. Tus videos se editan y se guardan en tu equipo, sin cuentas ni telemetría.">
+<meta name="theme-color" content="#070b1a">
+<meta property="og:title" content="CHAVAMON">
+<meta property="og:description" content="Editor de video local para Windows. Sin cuentas, sin telemetría, sin marca de agua.">
+<meta property="og:image" content="img/editor.jpg">
+<link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@700;800;900&family=Roboto+Mono:wght@400;500&display=swap">
+<style>
+/* Diseño: una sola columna sobre el azul noche de la app; el naranja de sus botones marca la acción principal. */
+:root {
+  color-scheme: dark;
+  --noche: #070b1a;
+  --panel: #0e1530;
+  --panel-2: #131c3d;
+  --linea: #23305e;
+  --texto: #e9ecf7;
+  --tenue: #9aa4c4;
+  --naranja: #ff7a1a;
+  --naranja-2: #ffa041;
+  --cian: #2fd3f0;
+  --verde: #3ddc97;
+  --ambar: #ffc04d;
+  --rojo: #ff6b6b;
+  --f-titulo: "Montserrat", "Segoe UI", system-ui, sans-serif;
+  --f-texto: "Inter", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "Roboto Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  --radio: 14px;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { animation: none !important; transition: none !important; } }
+body { margin: 0; background: var(--noche); color: var(--texto); font: 16px/1.6 var(--f-texto); -webkit-font-smoothing: antialiased; }
+body::before { content: ""; position: fixed; inset: 0; pointer-events: none; background: radial-gradient(900px 500px at 15% -10%, rgba(123, 47, 247, .22), transparent 60%), radial-gradient(800px 480px at 95% 0%, rgba(255, 122, 26, .14), transparent 60%); z-index: -1; }
+a { color: var(--cian); }
+img { max-width: 100%; height: auto; display: block; }
+.envoltura { width: 100%; max-width: 1120px; margin: 0 auto; padding-inline: 20px; }
+h1, h2, h3 { font-family: var(--f-titulo); line-height: 1.15; text-wrap: balance; margin: 0; }
+h2 { font-size: clamp(1.6rem, 3.2vw, 2.2rem); font-weight: 800; }
+h3 { font-size: 1.05rem; font-weight: 700; }
+p { margin: 0; }
+.etiqueta { font: 600 .75rem/1 var(--f-texto); letter-spacing: .12em; text-transform: uppercase; color: var(--cian); }
+:focus-visible { outline: 3px solid var(--cian); outline-offset: 3px; border-radius: 8px; }
+
+/* barra superior */
+.barra { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10; background: rgba(7, 11, 26, .82); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(35, 48, 94, .7); }
+.barra .envoltura { display: flex; align-items: center; gap: 16px; min-height: 64px; }
+.marca { display: flex; align-items: center; gap: 10px; text-decoration: none; min-width: 0; }
+.marca .sim { width: 36px; height: 36px; }
+.marca .letras { height: 22px; width: auto; }
+.barra nav { display: flex; gap: 22px; margin-left: auto; }
+.barra nav a { color: var(--tenue); text-decoration: none; font-weight: 500; font-size: .95rem; }
+.barra nav a:hover { color: var(--texto); }
+.estado { display: inline-flex; align-items: center; gap: 8px; font-size: .8rem; color: var(--tenue); border: 1px solid var(--linea); border-radius: 999px; padding: 5px 12px; white-space: nowrap; }
+.estado .punto { width: 8px; height: 8px; border-radius: 50%; background: var(--ambar); box-shadow: 0 0 0 0 rgba(255, 192, 77, .6); animation: latido 1.6s infinite; }
+.estado[data-estado="ok"] .punto { background: var(--verde); animation: none; }
+.estado[data-estado="dormido"] .punto { background: var(--rojo); animation: none; }
+@keyframes latido { 0% { box-shadow: 0 0 0 0 rgba(255, 192, 77, .55); } 70% { box-shadow: 0 0 0 8px rgba(255, 192, 77, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 192, 77, 0); } }
+@media (max-width: 760px) { .barra nav { display: none; } .estado { margin-left: auto; } .estado .txt { display: none; } }
+
+/* portada */
+.portada { padding-block: 56px 32px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 48px; align-items: center; }
+.portada .logo { width: min(440px, 100%); }
+.portada .lema { font-size: clamp(1.15rem, 2.2vw, 1.35rem); color: var(--texto); margin-top: 18px; max-width: 34ch; }
+.portada .sub { color: var(--tenue); margin-top: 10px; max-width: 46ch; }
+.descarga { margin-top: 28px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.btn { display: inline-flex; align-items: center; gap: 10px; font: 700 1rem/1 var(--f-texto); text-decoration: none; border-radius: 12px; padding: 16px 22px; border: 1px solid transparent; cursor: pointer; }
+.btn svg { width: 20px; height: 20px; flex: none; }
+.btn.principal { background: linear-gradient(180deg, var(--naranja-2), var(--naranja)); color: #fff; box-shadow: 0 10px 30px -10px rgba(255, 122, 26, .7); }
+.btn.principal:hover { filter: brightness(1.06); }
+.btn.claro { background: var(--panel); color: var(--texto); border-color: var(--linea); }
+.btn.claro:hover { border-color: var(--cian); }
+.ficha { margin-top: 14px; color: var(--tenue); font-size: .9rem; font-variant-numeric: tabular-nums; }
+.ficha b { color: var(--texto); font-weight: 600; }
+.ventana { border-radius: var(--radio); overflow: hidden; border: 1px solid var(--linea); background: var(--panel); box-shadow: 0 30px 80px -30px rgba(0, 0, 0, .8), 0 0 0 1px rgba(255, 255, 255, .02) inset; }
+.ventana .tope { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--linea); font-size: .78rem; color: var(--tenue); }
+.ventana .tope i { width: 10px; height: 10px; border-radius: 50%; background: var(--linea); display: block; }
+.ventana .tope span { margin-left: 6px; }
+@media (max-width: 900px) { .portada { grid-template-columns: minmax(0, 1fr); gap: 32px; padding-top: 36px; } }
+
+section { padding-block: 56px; }
+.encabezado { display: grid; gap: 10px; margin-bottom: 28px; max-width: 60ch; }
+.encabezado p { color: var(--tenue); }
+
+/* instalación: secuencia real, por eso va numerada */
+.pasos { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; counter-reset: paso; }
+.pasos li { background: var(--panel); border: 1px solid var(--linea); border-radius: var(--radio); padding: 20px; counter-increment: paso; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.pasos li::before { content: counter(paso); font: 800 1.4rem/1 var(--f-titulo); color: var(--naranja); }
+.pasos p { color: var(--tenue); font-size: .94rem; }
+.pasos kbd { font: 500 .82rem var(--f-mono); background: var(--panel-2); border: 1px solid var(--linea); border-radius: 6px; padding: 1px 6px; color: var(--texto); white-space: nowrap; }
+@media (max-width: 900px) { .pasos { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .pasos { grid-template-columns: minmax(0, 1fr); } }
+
+/* funciones */
+.funciones { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px 32px; }
+.funciones div { display: grid; gap: 6px; padding-top: 16px; border-top: 2px solid var(--linea); min-width: 0; }
+.funciones div:nth-child(3n+1) { border-top-color: #7b2ff7; }
+.funciones div:nth-child(3n+2) { border-top-color: #1e6bff; }
+.funciones div:nth-child(3n+3) { border-top-color: var(--naranja); }
+.funciones p { color: var(--tenue); font-size: .95rem; }
+@media (max-width: 900px) { .funciones { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .funciones { grid-template-columns: minmax(0, 1fr); } }
+
+.galeria { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+.galeria figure { margin: 0; display: grid; gap: 8px; min-width: 0; }
+.galeria figcaption { color: var(--tenue); font-size: .85rem; }
+.galeria img { border-radius: 12px; border: 1px solid var(--linea); }
+@media (max-width: 760px) { .galeria { grid-template-columns: minmax(0, 1fr); } }
+
+/* privacidad + verificación */
+.dos { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; }
+.caja { background: var(--panel); border: 1px solid var(--linea); border-radius: var(--radio); padding: 24px; display: grid; gap: 14px; align-content: start; min-width: 0; }
+.caja ul { margin: 0; padding-left: 1.1em; color: var(--tenue); display: grid; gap: 6px; }
+.caja ul b { color: var(--texto); font-weight: 600; }
+.huella { display: flex; gap: 8px; align-items: stretch; flex-wrap: wrap; }
+.huella code { flex: 1 1 260px; min-width: 0; font: 500 .82rem/1.5 var(--f-mono); background: var(--panel-2); border: 1px solid var(--linea); border-radius: 10px; padding: 10px 12px; overflow-wrap: anywhere; color: var(--texto); }
+.copiar { font: 600 .85rem var(--f-texto); background: var(--panel-2); color: var(--texto); border: 1px solid var(--linea); border-radius: 10px; padding: 0 14px; cursor: pointer; min-height: 40px; }
+.copiar:hover { border-color: var(--cian); }
+pre.cmd { margin: 0; overflow-x: auto; font: 500 .8rem/1.5 var(--f-mono); background: var(--panel-2); border: 1px solid var(--linea); border-radius: 10px; padding: 10px 12px; color: var(--texto); }
+.nota { color: var(--tenue); font-size: .88rem; }
+@media (max-width: 760px) { .dos { grid-template-columns: minmax(0, 1fr); } }
+
+footer { border-top: 1px solid var(--linea); padding-block: 28px 40px; color: var(--tenue); font-size: .88rem; }
+footer .envoltura { display: flex; flex-wrap: wrap; gap: 12px 24px; justify-content: space-between; }
+</style>
+</head>
+<body>
+<header class="barra">
+  <div class="envoltura">
+    <a class="marca" href="#" aria-label="CHAVAMON, inicio">
+      <img class="sim" src="img/simbolo.png" alt="" width="36" height="36">
+      <img class="letras" src="img/letras.png" alt="CHAVAMON" width="166" height="22">
+    </a>
+    <nav aria-label="Secciones">
+      <a href="#instalar">Instalar</a>
+      <a href="#funciones">Funciones</a>
+      <a href="#privacidad">Privacidad</a>
+    </nav>
+    <span class="estado" id="estado" data-estado="despertando" role="status" aria-live="polite" title="Estado del servidor de CHAVAMON">
+      <span class="punto" aria-hidden="true"></span><span class="txt" id="estado-txt">Despertando servidor…</span>
+    </span>
+  </div>
+</header>
+
+<main>
+  <div class="envoltura">
+    <div class="portada">
+      <div>
+        <img class="logo" src="img/logo-completo.png" alt="CHAVAMON" width="440" height="252">
+        <p class="lema">Edita tus videos en tu computadora. Sin cuentas, sin marca de agua y sin subir nada a internet.</p>
+        <p class="sub">Corta, agrega texto, música y subtítulos, y exporta en MP4 listo para YouTube, TikTok, Reels o Shorts.</p>
+        <div class="descarga">
+          <a class="btn principal" id="btn-descarga" href="https://github.com/AlfonsoCha1/CHAVAMON_BASICO/releases/download/v0.1.1/CHAVAMON-0.1.1-windows-x64.exe">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 19h16"/></svg>
+            Descargar para Windows
+          </a>
+          <a class="btn claro" href="https://github.com/AlfonsoCha1/CHAVAMON_BASICO" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.4-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z"/></svg>
+            Ver en GitHub
+          </a>
+        </div>
+        <p class="ficha" id="ficha">Versión <b id="f-version">0.1.1</b> · <b id="f-tamano">107 MB</b> · Windows 10 y 11 de 64 bits<span id="f-descargas"></span></p>
+      </div>
+      <div class="ventana">
+        <div class="tope"><i></i><i></i><i></i><span>CHAVAMON · Mi primer video</span></div>
+        <img src="img/editor.jpg" alt="Editor de CHAVAMON con un clip en la línea de tiempo y un texto encima del video" width="1440" height="900">
+      </div>
+    </div>
+  </div>
+
+  <section id="instalar">
+    <div class="envoltura">
+      <div class="encabezado">
+        <span class="etiqueta">Instalación</span>
+        <h2>Listo en cuatro pasos</h2>
+        <p>Si ya tenías Montoya Studio, CHAVAMON lo reemplaza y conserva tus proyectos, tu biblioteca y tus ajustes.</p>
+      </div>
+      <ol class="pasos">
+        <li><h3>Descarga</h3><p>Pulsa <b>Descargar para Windows</b>. El archivo se llama <kbd>CHAVAMON-0.1.1-windows-x64.exe</kbd>.</p></li>
+        <li><h3>Abre el instalador</h3><p>Búscalo en tu carpeta <kbd>Descargas</kbd> y ábrelo con doble clic.</p></li>
+        <li><h3>Aviso de Windows</h3><p>Si aparece "Windows protegió su PC", elige <kbd>Más información</kbd> y luego <kbd>Ejecutar de todas formas</kbd>. Sale porque el instalador aún no tiene firma digital.</p></li>
+        <li><h3>Empieza a editar</h3><p>Abre CHAVAMON desde el escritorio o el menú Inicio y crea tu primer proyecto.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="funciones">
+    <div class="envoltura">
+      <div class="encabezado">
+        <span class="etiqueta">Funciones</span>
+        <h2>Lo que necesitas para tus videos, sin pagar suscripciones</h2>
+      </div>
+      <div class="funciones">
+        <div><h3>Línea de tiempo</h3><p>Pistas de video, audio, texto y subtítulos. Divide, elimina, oculta, silencia y bloquea pistas, con ajuste magnético.</p></div>
+        <div><h3>Formatos para redes</h3><p>Horizontal 16:9 para YouTube, vertical 9:16 para TikTok, Reels y Shorts, y cuadrado 1:1, con encuadre.</p></div>
+        <div><h3>Exportar en MP4</h3><p>De 720p a 4K, a 24, 25, 30 o 60 fps, con calidad normal, alta o máxima.</p></div>
+        <div><h3>Texto con estilo</h3><p>Plantillas como Clásico, Impacto, Neón o Manuscrito, con siete fuentes incluidas.</p></div>
+        <div><h3>Velocidad y subtítulos</h3><p>Velocidad del clip de 0.25x a 4x y subtítulos que puedes exportar como archivo SRT.</p></div>
+        <div><h3>Guardado automático</h3><p>Cada cambio se guarda con copia de respaldo. Si la app se cierra de golpe, recuperas tu proyecto.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section aria-label="Capturas">
+    <div class="envoltura galeria">
+      <figure><img src="img/inicio.jpg" alt="Pantalla Mis proyectos de CHAVAMON con un proyecto guardado" width="1440" height="900"><figcaption>Tus proyectos, guardados en Documentos\CHAVAMON.</figcaption></figure>
+      <figure><img src="img/ajustes.jpg" alt="Ajustes de CHAVAMON con la sección de privacidad" width="1440" height="900"><figcaption>Ajustes, privacidad e información del equipo.</figcaption></figure>
+    </div>
+  </section>
+
+  <section id="privacidad">
+    <div class="envoltura dos">
+      <div class="caja">
+        <span class="etiqueta">Privacidad</span>
+        <h2>Tus videos no salen de tu computadora</h2>
+        <ul>
+          <li><b>Todo es local.</b> Los videos, fotos, audios y proyectos se procesan y guardan en tu equipo.</li>
+          <li><b>Sin cuentas ni telemetría.</b> No hay registro, analíticas ni subidas ocultas.</li>
+          <li><b>Sin red en el editor.</b> La versión de escritorio bloquea cualquier conexión de la interfaz.</li>
+          <li><b>Solo lo que eliges.</b> La app abre únicamente los archivos que tú seleccionas o arrastras.</li>
+        </ul>
+      </div>
+      <div class="caja">
+        <span class="etiqueta">Verifica tu descarga</span>
+        <h3>Huella SHA-256 del instalador</h3>
+        <div class="huella">
+          <code id="sha">5b49580d4f3fe24e36afeac9208da2ffd59d1e13809d0f3846595b085ca355d1</code>
+          <button class="copiar" id="copiar" type="button">Copiar</button>
+        </div>
+        <p class="nota">En PowerShell, dentro de tu carpeta Descargas:</p>
+        <pre class="cmd"><code>Get-FileHash .\CHAVAMON-0.1.1-windows-x64.exe -Algorithm SHA256</code></pre>
+        <p class="nota">Si el resultado es igual a la huella de arriba, el archivo llegó completo y sin cambios.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="envoltura">
+    <span>© 2026 Alfonso Chavarín. CHAVAMON es un nombre de uso personal; no es una marca registrada.</span>
+    <span><a href="https://github.com/AlfonsoCha1/CHAVAMON_BASICO" rel="noopener">Código en GitHub</a></span>
+  </div>
+</footer>
+
+<script>
+(() => {
+  // El servidor gratis de Render se duerme tras 15 minutos sin visitas; esta página lo despierta al abrirse.
+  // La descarga no depende de él: el botón apunta directo al archivo en GitHub.
+  const SERVIDOR = 'https://chavamon-servidor.onrender.com';
+  const $ = (id) => document.getElementById(id);
+  const estado = $('estado');
+  const txt = $('estado-txt');
+  const poner = (e, t) => { estado.dataset.estado = e; txt.textContent = t; estado.title = t; };
+  const mb = (b) => Math.round(b / 1048576) + ' MB';
+
+  function mostrar(v) {
+    if (!v || !v.url) return;
+    $('btn-descarga').href = v.url;
+    if (v.version) $('f-version').textContent = v.version;
+    if (v.tamano) $('f-tamano').textContent = mb(v.tamano);
+    if (v.sha256 && /^[a-f0-9]{64}$/i.test(v.sha256)) $('sha').textContent = v.sha256;
+    if (typeof v.descargas === 'number') $('f-descargas').textContent = ' · ' + v.descargas.toLocaleString('es-MX') + (v.descargas === 1 ? ' descarga' : ' descargas');
+  }
+
+  async function despertar() {
+    const t0 = performance.now();
+    const aviso = setTimeout(() => poner('despertando', 'Despertando servidor (tarda cerca de un minuto)…'), 4000);
+    try {
+      const r = await fetch(SERVIDOR + '/salud', { cache: 'no-store', signal: AbortSignal.timeout(90000) });
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      clearTimeout(aviso);
+      const s = ((performance.now() - t0) / 1000).toFixed(1);
+      poner('ok', 'Servidor en línea · ' + s + ' s');
+      const v = await (await fetch(SERVIDOR + '/api/version', { cache: 'no-store', signal: AbortSignal.timeout(20000) })).json();
+      mostrar(v);
+    } catch (e) {
+      clearTimeout(aviso);
+      poner('dormido', 'Servidor no disponible · la descarga funciona igual');
+    }
+  }
+  despertar();
+
+  $('copiar').addEventListener('click', async () => {
+    const b = $('copiar');
+    const valor = $('sha').textContent.trim();
+    try { await navigator.clipboard.writeText(valor); b.textContent = 'Copiada'; }
+    catch { const r = document.createRange(); r.selectNodeContents($('sha')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); b.textContent = 'Selecciona y copia'; }
+    setTimeout(() => { b.textContent = 'Copiar'; }, 2200);
+  });
+})();
+</script>
+</body>
+</html>
