@@ -1,0 +1,8 @@
+node_modules/
+salida/
+build-win/
+*.part
+*.exe
+*.7z
+.DS_Store
+Thumbs.db

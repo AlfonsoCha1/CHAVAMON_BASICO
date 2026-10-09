@@ -1,0 +1,17 @@
+{
+  "name": "Montoya Studio",
+  "short_name": "Montoya",
+  "description": "Editor de video local. Tus videos no salen de tu dispositivo.",
+  "lang": "es-MX",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#060a18",
+  "theme_color": "#060a18",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
