@@ -1,4 +1,4 @@
-// Proceso principal de Montoya Studio (escritorio: Windows, macOS, Linux).
+// Proceso principal de CHAVAMON (antes Montoya Studio) — escritorio: Windows, macOS, Linux.
 // Principios: todo local, sin telemetría, sin red, permisos mínimos, ventana aislada (contextIsolation + sandbox).
 'use strict';
 const { app, BrowserWindow, protocol, ipcMain, dialog, shell, session, Menu, nativeImage } = require('electron');
@@ -11,9 +11,32 @@ const DEV_URL = process.env.MS_DEV_URL || '';
 const DIST = path.join(__dirname, '..', 'dist');
 const IS_TEST = process.env.MS_TEST === '1';
 
+const BRAND = 'CHAVAMON';
+const LEGACY_NAME = 'Montoya Studio'; // nombre anterior: sus carpetas se siguen usando si ya tienen datos
+
+function hasEntries(dir) {
+  try { return fs.readdirSync(dir).length > 0; } catch { return false; }
+}
+
+// Ajustes y datos internos: si existe la carpeta de Montoya Studio y aún no la de CHAVAMON, se sigue usando la anterior.
 // Permite aislar datos en pruebas automáticas.
 if (process.env.MS_USER_DATA) app.setPath('userData', process.env.MS_USER_DATA);
-const DOCS_ROOT = process.env.MS_DOCS_ROOT || path.join(app.getPath('documents'), 'Montoya Studio');
+else {
+  const legacyUserData = path.join(app.getPath('appData'), LEGACY_NAME);
+  const brandUserData = path.join(app.getPath('appData'), BRAND);
+  if (!fs.existsSync(brandUserData) && fs.existsSync(legacyUserData)) app.setPath('userData', legacyUserData);
+}
+
+// Proyectos y biblioteca: Documentos\CHAVAMON, salvo que Documentos\Montoya Studio ya tenga proyectos o biblioteca.
+function pickDocsRoot() {
+  if (process.env.MS_DOCS_ROOT) return process.env.MS_DOCS_ROOT;
+  const docs = app.getPath('documents');
+  const current = path.join(docs, BRAND);
+  const legacy = path.join(docs, LEGACY_NAME);
+  if (!fs.existsSync(current) && (hasEntries(path.join(legacy, 'Proyectos')) || hasEntries(path.join(legacy, 'Biblioteca')))) return legacy;
+  return current;
+}
+const DOCS_ROOT = pickDocsRoot();
 const PROJECTS = path.join(DOCS_ROOT, 'Proyectos');
 const LIBRARY = path.join(DOCS_ROOT, 'Biblioteca');
 const SETTINGS_FILE = path.join(app.getPath('userData'), 'settings.json');
@@ -126,7 +149,7 @@ const FILTERS = {
   image: [{ name: 'Imágenes', extensions: ['jpg', 'jpeg', 'png', 'webp', 'gif'] }],
   audio: [{ name: 'Audio', extensions: ['mp3', 'm4a', 'aac', 'wav', 'ogg', 'opus', 'flac'] }],
   font: [{ name: 'Fuentes', extensions: ['ttf', 'otf', 'woff', 'woff2'] }],
-  pack: [{ name: 'Paquete Montoya', extensions: ['mspack', 'json'] }],
+  pack: [{ name: 'Paquete CHAVAMON', extensions: ['mspack', 'json'] }],
   subtitle: [{ name: 'Subtítulos SRT', extensions: ['srt'] }],
   visual: [{ name: 'Video o imagen', extensions: ['mp4', 'mov', 'm4v', 'webm', 'mkv', 'jpg', 'jpeg', 'png', 'webp', 'gif'] }],
   media: [{ name: 'Video, imagen o audio', extensions: ['mp4', 'mov', 'm4v', 'webm', 'mkv', 'jpg', 'jpeg', 'png', 'webp', 'gif', 'mp3', 'm4a', 'aac', 'wav', 'ogg', 'opus', 'flac'] }],
@@ -310,7 +333,7 @@ function registerIpc() {
 
   // ----- exportación -----
   h('export:pick', async (suggested) => {
-    const dir = path.join(app.getPath('videos'), 'Montoya Studio');
+    const dir = path.join(app.getPath('videos'), BRAND);
     await fsp.mkdir(dir, { recursive: true }).catch(() => {});
     if (IS_TEST && process.env.MS_EXPORT_DIR) {
       return { name: suggested, path: path.join(process.env.MS_EXPORT_DIR, suggested) };
@@ -448,7 +471,7 @@ function createWindow() {
     minWidth: 360,
     minHeight: 600,
     backgroundColor: '#070b1a',
-    title: 'Montoya Studio',
+    title: BRAND,
     icon,
     show: false,
     autoHideMenuBar: true,
